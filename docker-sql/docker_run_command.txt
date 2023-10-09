@@ -1,0 +1,81 @@
+-- create local volume 
+docker volume create --name ny_taxi_postgres_data -d local 
+
+-- run postgres server using docker 
+docker run -it \
+        -e PSTGRES_USER="postgres" \
+        -e POSTGRES_PASSWORD="postgres" \
+        -e POSTGRES_DB="ny_taxi" \
+        -v ny_taxi_postgres_data:/var/lib/postgresql/data:rw \
+        -p 5432:5432 \
+         postgres:13
+
+-- user pgcli to connect to docker server 
+pgcli -h localhost -u postgres -p 5432 -d ny_taxi
+
+-- download data 
+wget https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz 
+
+-- pgadmin 
+docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -p 8080:80 \
+  dpage/pgadmin4
+
+launch at: localhost:8080
+
+-- we need to link pgadmin to the database container because they can't see each other, we need to create a network to have both find each other 
+docker network create nytaxi-pg-network 
+
+docker run -it \
+        -e PSTGRES_USER="postgres" \
+        -e POSTGRES_PASSWORD="postgres" \
+        -e POSTGRES_DB="ny_taxi" \
+        -v ny_taxi_postgres_data:/var/lib/postgresql/data:rw \
+        -p 5432:5432 \
+        --network=nytaxi-pg-network \
+        --name ny-taxi-database \
+         postgres:13
+
+docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -p 8080:80 \
+  --network=nytaxi-pg-network \
+  --name pgadmin-taxi \
+  dpage/pgadmin4
+
+-- when connecting through pgadmin, we need to use ny-taxi-database as the Host name
+-- run the script from locally to populate data in the container (make sure the container is running)
+
+python3 ingest_data.py \
+  --user=postgres \
+  --password=postgres \
+  --host=localhost \
+  --port=5432 \
+  --db=ny_taxi \
+  --table_name=ny_taxi_data_table \
+  --url=https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz
+
+--Now, let's build a container image to do that for us --> it will use the Dockerfile
+  docker build -t taxi_ingest:v001 .
+
+-- run the image on the same network so that it finds the database container
+-- entry point on the container is the ingest_data.py
+docker run -it \
+      --network=nytaxi-pg-network \
+      taxi_ingest:v001 \
+      --user=postgres \
+      --password=postgres \
+      --host=ny-taxi-database \
+      --port=5432 \
+      --db=ny_taxi \
+      --table_name=ny_taxi_data_table \
+      --url=https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz
+
+-- more on docker on wsl
+docker run -it --entrypoint=bash python:3.9
+
+
+
