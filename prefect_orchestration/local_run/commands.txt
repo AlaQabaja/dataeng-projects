@@ -1,8 +1,15 @@
-python ingest_data.py \
-      --user=postgres \
-      --password=postgres \
-      --host=localhost \
-      --port=5432 \
-      --db=ny_taxi \
-      --table_name=ny_taxi_data_table \
-      --url=https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz
+- Needed to install Python11 and ran a few commands to create environment
+- Then rank docker compose up to create postgres database 
+- Then ran the Flow using this command:
+      python ingest_data.py \
+            --user=postgres \
+            --password=postgres \
+            --host=localhost \
+            --port=5432 \
+            --db=ny_taxi \
+            --table_name=ny_taxi_data_table \
+            --url=https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz
+
+- Finally, ran the following command to start flow UI
+prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
+prefect server start
