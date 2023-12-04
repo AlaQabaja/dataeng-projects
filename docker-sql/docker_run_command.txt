@@ -47,8 +47,10 @@ docker run -it \
   dpage/pgadmin4
 
 -- when connecting through pgadmin, we need to use ny-taxi-database as the Host name
--- run the script from locally to populate data in the container (make sure the container is running)
 
+-- all of the above can be replaced by: docker compose up 
+
+-- run the script from locally to populate data in the container (make sure the container is running)
 python3 ingest_data.py \
   --user=postgres \
   --password=postgres \
@@ -65,7 +67,7 @@ python3 ingest_data.py \
 -- entry point on the container is the ingest_data.py
 docker run -it \
       --network=nytaxi-pg-network \
-      taxi_ingest:v001 \
+      taxi_ingest_transform:v001 \
       --user=postgres \
       --password=postgres \
       --host=ny-taxi-database \

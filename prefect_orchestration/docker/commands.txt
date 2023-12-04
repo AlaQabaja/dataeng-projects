@@ -1,0 +1,19 @@
+-- get pgadatabase and pgadmin up using this command
+docker compose up 
+
+-- build image of the ingest/transformation script 
+docker build -t taxi_ingest_prefect:v002 .
+
+-- run the image on the same network used by compose so that it finds the database container
+-- entry point on the container is the ingest_data.py
+-- note: by default, docker compose add the directory as a prefix to the network name
+docker run -it \
+      --network=local_run_ny-taxi-pg-network-prefect \
+      taxi_ingest_prefect:v002 \
+      --user=postgres \
+      --password=postgres \
+      --host=nytaxidatabase \
+      --port=5432 \
+      --db=ny_taxi \
+      --table_name=ny_taxi_data_table \
+      --url=https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz

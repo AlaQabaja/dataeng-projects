@@ -1,0 +1,9 @@
+services:
+  nytaxidatabase:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ny_taxi
+    ports:
+      - "5432:5432"
