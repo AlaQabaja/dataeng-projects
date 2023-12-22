@@ -1,0 +1,10 @@
+mkdir -p ./dags ./logs ./plugins
+echo -e "AIRFLOW_UID=$(id -u)" > .env
+
+-- bring all services up 
+docker compose up 
+
+-- to check any of these containers, you can run docker ps and then access that container with 
+ docker exec -it 635babcb45cf bash
+
+-- 

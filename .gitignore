@@ -3,3 +3,6 @@ prefectlocal/
 Python-3.11.0/
 Python-3.11.0.tgz
 output.csv.gz
+airflow/logs
+.env
+.pyc
