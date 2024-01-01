@@ -6,3 +6,4 @@ output.csv.gz
 airflow/logs
 .env
 .pyc
+dbt/dbt-env

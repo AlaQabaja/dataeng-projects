@@ -1,0 +1,13 @@
+# Use the official Apache Spark image with PySpark support
+FROM apache/spark-py:latest
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy the local PySpark script to the container
+COPY my_script.py .
+# Copy the log4j.properties file to the Spark configuration directory
+COPY log4j.properties /opt/spark/conf/log4j.properties
+# Run the PySpark script when the container starts
+# ">", "/path/to/logfile.log", "2>&1"
+CMD ["/opt/spark/bin/spark-submit", "--master", "local",  "my_script.py"]
