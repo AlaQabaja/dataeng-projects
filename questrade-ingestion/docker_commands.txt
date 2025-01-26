@@ -1,0 +1,15 @@
+-- create volume
+docker volume create --name my_questrade_data -d local
+
+-- spin up all resources 
+ docker compose up 
+
+-- run code through docker 
+docker run -it \
+      --network=questrade-ingestion_questrade-network \
+      questrade_ingest:v002 \
+      --user=postgres \
+      --password=postgres \
+      --host=pgdatabase \
+      --port=5432 \
+      --db=questrade
