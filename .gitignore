@@ -7,3 +7,11 @@ airflow/logs
 .env
 .pyc
 dbt/dbt-env
+access_token.yaml
+.tar.gz
+airflow/dags/__pycache__/data_ingestion_local.cpython-38.pyc
+airflow/dags/__pycache__/ingest_script.cpython-38.pyc
+databricks-local/pypark.tar.gz
+databricks-local/pyspark.tar.gz
+questrade-ingestion/__pycache__/questrade.cpython-313.pyc
+questrade-ingestion/__pycache__/utils.cpython-313.pyc

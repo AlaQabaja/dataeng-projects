@@ -36,7 +36,7 @@ class Questrade:
             JSON response
         """
         request_url = self.api_server + 'v1/' +  endpoint
-        logging.info('Making request to {request_url}')
+        logging.info(f'Making request to {request_url}')
         response = requests.get(request_url, headers= self.headers, params= params)
         data = response.json()
         return data
@@ -135,7 +135,7 @@ class Questrade:
             Dictionary holding balance information
         """
         logging.info("Getting account balance...")
-        response = self._send_message("get", "accounts/" + str(account_id) + "/balances")
+        response = self._send_message("accounts/" + str(account_id) + "/balances")
         try:
             return response
         except Exception:

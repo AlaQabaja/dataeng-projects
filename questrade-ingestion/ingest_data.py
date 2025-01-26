@@ -55,8 +55,58 @@ def main(params):
                     logging.info(f'Writing positions')
                     conn.execute(
                     text("INSERT INTO positions (account_number, average_entry_price, closed_pnl, closed_quantity, current_market_value, current_price, open_pnl, open_quantity, symbol, symbol_id, total_cost, day ) VALUES (:account_number, :average_entry_price, :closed_pnl, :closed_quantity, :current_market_value, :current_price, :open_pnl, :open_quantity, :symbol, :symbol_id, :total_cost, :day)"),
-                    {"account_number": account_id, "average_entry_price": position['averageEntryPrice'], "closed_pnl": position['closedPnl'], "closed_quantity": position['closedQuantity'], "current_market_value": position['currentMarketValue'], "current_price": position['currentPrice'], "open_pnl": position['openPnl'], "open_quantity": position['openQuantity'], "symbol": position['symbol'], "symbol_id": position['symbolId'], "total_cost": position['totalCost'], "day": today_date}
+                    {"account_number": account_id
+                     , "average_entry_price": position['averageEntryPrice']
+                     , "closed_pnl": position['closedPnl']
+                     , "closed_quantity": position['closedQuantity']
+                     , "current_market_value": position['currentMarketValue']
+                     , "current_price": position['currentPrice']
+                     , "open_pnl": position['openPnl']
+                     , "open_quantity": position['openQuantity']
+                     , "symbol": position['symbol']
+                     , "symbol_id": position['symbolId']
+                     , "total_cost": position['totalCost']
+                     , "day": today_date}
                     )
+            logging.info("Done writing positions info")
+            conn.execute(
+                 text('DELETE FROM account_balances WHERE day = :day'),
+                 {"day" : today_date}
+            )
+            for account_id in account_ids:
+                account_balances = questrade_obj.get_account_balances(account_id)
+                logging.info(f"account balances object {account_balances}")
+                for account_balance in account_balances['perCurrencyBalances']:
+                    logging.info(f'Writing account per currency balances')
+                    conn.execute(
+                        text("INSERT INTO account_balances (account_number, currency, cash, market_value, total_equity, buying_power, maintenance_excess, balance_type, day) VALUES (:account_number, :currency, :cash, :market_value, :total_equity, :buying_power, :maintenance_excess, :balance_type, :day)"),
+                        {"account_number": account_id
+                         , "currency": account_balance['currency']
+                         , "cash": account_balance['cash']
+                         , "market_value": account_balance['marketValue']
+                         , "total_equity": account_balance['totalEquity']
+                         , "buying_power": account_balance['buyingPower']
+                         , "maintenance_excess": account_balance['maintenanceExcess']
+                         , "balance_type": "per_currency"
+                         , "day": today_date
+                        }
+                    )
+                for account_balance in account_balances['combinedBalances']:
+                    logging.info(f'Writing account combined balances')
+                    conn.execute(
+                        text("INSERT INTO account_balances (account_number, currency, cash, market_value, total_equity, buying_power, maintenance_excess, balance_type, day) VALUES (:account_number, :currency, :cash, :market_value, :total_equity, :buying_power, :maintenance_excess, :balance_type, :day)"),
+                        {"account_number": account_id
+                         , "currency": account_balance['currency']
+                         , "cash": account_balance['cash']
+                         , "market_value": account_balance['marketValue']
+                         , "total_equity": account_balance['totalEquity']
+                         , "buying_power": account_balance['buyingPower']
+                         , "maintenance_excess": account_balance['maintenanceExcess']
+                         , "balance_type": "combined"
+                         , "day": today_date
+                        }
+                    )
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Ingest Questrade Data Into Database')
     parser.add_argument('--user', required=True, help='user name for postgres')

@@ -1,0 +1,12 @@
+dbt_dataeng_zoomcamp:
+  outputs:
+    dev:
+      dbname: dbt_database
+      host: 172.20.96.1
+      pass: postgres
+      port: 5432
+      schema: dbt_schema
+      threads: 4
+      type: postgres
+      user: postgres
+  target: dev

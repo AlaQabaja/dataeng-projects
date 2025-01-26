@@ -26,3 +26,20 @@ CREATE TABLE IF NOT EXISTS positions (
     day DATE                          -- load day
 );
 """
+
+sql_create_account_balances_tbl = """
+ CREATE TABLE IF NOT EXISTS account_balances 
+ (
+	 id SERIAL PRIMARY KEY,
+	 account_number VARCHAR(20),
+	 currency VARCHAR(5),
+	 cash NUMERIC(10,4),
+	 market_value NUMERIC(10,4),
+	 total_equity NUMERIC(10,4),
+	 buying_power NUMERIC(10,4),
+	 maintenance_excess NUMERIC(10,4),
+	 balance_type VARCHAR(20),
+	 day DATE
+	 
+ );
+"""
