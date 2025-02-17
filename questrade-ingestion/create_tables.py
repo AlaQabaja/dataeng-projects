@@ -43,3 +43,29 @@ sql_create_account_balances_tbl = """
 	 
  );
 """
+
+sql_create_account_activities_tbl = """
+CREATE TABLE IF NOT EXISTS account_activities 
+(
+	id SERIAL PRIMARY KEY, 
+	account_number VARCHAR(20),
+	trade_time TIMESTAMPTZ,
+	trade_date DATE,
+	transaction_time TIMESTAMPTZ,
+	transaction_date DATE,
+	settlement_time TIMESTAMPTZ,
+	settlement_date DATE,
+	action VARCHAR(20),
+	symbol VARCHAR(20),
+	symbol_id BIGINT,
+	description TEXT,
+	currency VARCHAR(10),
+	quantity BIGINT,
+	price NUMERIC(10,4),
+	gross_amount NUMERIC(10,4),
+	commission NUMERIC(10,4),
+	net_amount NUMERIC(10,4),
+	type VARCHAR(30),
+    day DATE
+);
+"""

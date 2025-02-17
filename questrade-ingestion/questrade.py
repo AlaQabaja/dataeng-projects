@@ -190,9 +190,7 @@ class Questrade:
         }
 
         logging.info("Getting account activities...")
-        response = self._send_message(
-            "get", "accounts/" + str(account_id) + "/activities", params=payload
-        )
+        response = self._send_message("accounts/" + str(account_id) + "/activities", params=payload)
 
         try:
             activities = response["activities"]
